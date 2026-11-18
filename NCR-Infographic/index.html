@@ -1,0 +1,1067 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Estimate NCR inspection, rework and daily meeting costs using editable company assumptions.">
+  <title>NCR Cost Calculator</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f3f6f8;
+      --ink: #17324b;
+      --muted: #62768a;
+      --rule: #dce5ec;
+      --blue: #1e6398;
+      --blue-dark: #17496e;
+      --blue-soft: #eaf3f9;
+      --amber: #a76613;
+      --red: #bd4147;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 28px; background: #e7edf1; color: var(--ink); font-family: "Aptos", "Segoe UI", sans-serif; }
+    button, input, select { font: inherit; }
+    .app { width: min(100%, 1160px); margin: 0 auto; }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; padding: 30px 34px; background: var(--blue-dark); color: #fff; }
+    .eyebrow { margin: 0 0 9px; color: #b8d9ec; font-size: 11px; font-weight: 750; letter-spacing: 1.4px; text-transform: uppercase; }
+    h1 { margin: 0; font: 700 clamp(28px, 4vw, 39px)/1.08 Georgia, "Times New Roman", serif; }
+    .header p:last-child { max-width: 690px; margin: 11px 0 0; color: #d5e5ef; font-size: 14px; line-height: 1.5; }
+    .header-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+    .button { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; padding: 8px 12px; border: 1px solid #c9d6df; border-radius: 4px; background: #fff; color: var(--ink); font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: none; }
+    .button:hover { background: #f0f5f8; }
+    .button.primary { border-color: #8bb9d5; background: #e8f4fb; color: var(--blue-dark); }
+    .button.danger { color: var(--red); }
+    .notice { margin: 18px 0; padding: 12px 15px; border: 1px solid #e4d5ad; border-left: 4px solid #c58b29; background: #fffaf0; color: #644c21; font-size: 13px; line-height: 1.45; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr); gap: 18px; align-items: start; }
+    .panel { margin-bottom: 18px; padding: 21px; border: 1px solid var(--rule); background: #fff; box-shadow: 0 3px 12px rgb(23 50 75 / 4%); }
+    .panel h2 { margin: 0; font-size: 17px; font-weight: 760; }
+    .panel-intro { margin: 6px 0 18px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .field { min-width: 0; }
+    .field.wide { grid-column: 1 / -1; }
+    label, .field-label { display: block; margin-bottom: 6px; color: #3b5369; font-size: 12px; font-weight: 700; }
+    input, select { width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid #cbd7e0; border-radius: 4px; background: #fff; color: var(--ink); }
+    input:focus, select:focus, button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid #8bc6e8; outline-offset: 2px; }
+    .unit { margin-top: 4px; color: #7b8b99; font-size: 10px; }
+    .fixed-value { min-height: 40px; padding: 10px; border: 1px solid #e1e8ed; border-radius: 4px; background: #f3f6f8; color: #51677b; font-size: 13px; }
+    .section-rule { margin: 20px 0 16px; padding-top: 17px; border-top: 2px solid var(--rule); }
+    .section-rule h3, .scenario-fields h3 { margin: 0 0 14px; font-size: 15px; }
+    .scenario-fields { padding-top: 16px; border-top: 1px solid var(--rule); }
+    .scenario-fields[hidden] { display: none; }
+    .choice-list { display: flex; flex-wrap: wrap; gap: 10px; }
+    .choice { display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 9px 12px; border: 1px solid var(--rule); border-radius: 4px; background: #f8fafb; color: var(--blue-dark); font-size: 12px; font-weight: 700; }
+    .choice input { width: auto; min-height: auto; margin: 0; accent-color: var(--blue); }
+    .status-choice { min-width: 0; margin: 0; padding: 0; border: 0; }
+    .status-choice legend { margin-bottom: 6px; color: #3b5369; font-size: 12px; font-weight: 700; }
+    .subsection { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--rule); }
+    .subsection h3 { margin: 0 0 13px; font-size: 13px; }
+    .summary-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    .summary-table th, .summary-table td { padding: 9px 5px; border-bottom: 1px solid #edf1f4; text-align: left; }
+    .summary-table th { color: #62768a; font-size: 10px; }
+    .summary-table td:nth-child(n+2), .summary-table th:nth-child(n+2) { text-align: right; white-space: nowrap; }
+    .summary-table tfoot td { border-top: 2px solid #cbd7e0; border-bottom: 0; color: var(--ink); font-weight: 800; }
+    .results { position: sticky; top: 18px; padding: 0; overflow: hidden; }
+    .result-top { padding: 20px; background: var(--blue-dark); color: white; }
+    .result-top .eyebrow { margin-bottom: 7px; }
+    .result-name { margin: 0; color: #d8e7f0; font-size: 13px; }
+    .totals { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
+    .total { padding: 13px; border: 1px solid rgb(255 255 255 / 20%); background: rgb(255 255 255 / 7%); }
+    .total.overall { border-color: #8dbfa8; background: rgb(36 118 83 / 24%); }
+    .total-label { color: #c8d9e5; font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; }
+    .total-value { margin-top: 5px; font-size: clamp(23px, 3vw, 31px); font-weight: 800; line-height: 1; }
+    .total-value small { font-size: 14px; font-weight: 650; }
+    .result-body { padding: 18px 20px; }
+    .result-body h2 { margin: 0 0 12px; font-size: 15px; }
+    .result-foot { margin: 13px 0 0; color: #708193; font-size: 10px; line-height: 1.45; }
+    .validation { display: none; margin: 0 0 12px; padding: 9px 11px; border-left: 3px solid var(--amber); background: #fff8e9; color: #745516; font-size: 11px; line-height: 1.4; }
+    .validation.visible { display: block; }
+    details.assumptions { margin-top: 18px; border: 1px solid var(--rule); background: #fff; }
+    details.assumptions summary { padding: 16px 19px; color: var(--blue-dark); font-size: 14px; font-weight: 760; cursor: pointer; }
+    .settings { padding: 0 19px 19px; }
+    .settings-intro { margin: 0 0 14px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .settings-grid h3 { margin: 0 0 10px; font-size: 13px; }
+    .table-wrap { overflow-x: auto; margin-bottom: 9px; }
+    .settings table { width: 100%; border-collapse: collapse; font-size: 11px; }
+    .settings th, .settings td { min-width: 90px; padding: 6px; border-bottom: 1px solid #edf1f4; text-align: left; }
+    .settings th { color: var(--muted); font-size: 10px; }
+    .settings input, .settings select { min-width: 100px; min-height: 34px; padding: 6px; font-size: 11px; }
+    .row-delete { border: 0; background: none; color: var(--red); font-size: 11px; font-weight: 700; cursor: pointer; }
+    .setting-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; }
+    .save-state { color: var(--muted); font-size: 11px; }
+    .footer { display: flex; justify-content: space-between; gap: 12px; padding: 20px 0; color: var(--muted); font-size: 11px; }
+    .footer a { color: var(--blue-dark); font-weight: 700; }
+    @media (max-width: 820px) {
+      body { padding: 12px; }
+      .header { display: block; padding: 22px; }
+      .header-actions { justify-content: flex-start; margin-top: 18px; }
+      .layout { grid-template-columns: 1fr; }
+      .results { position: static; grid-row: 1; }
+      .settings-grid { grid-template-columns: 1fr; }
+      .footer { display: block; }
+    }
+    @media print {
+      body { padding: 0; background: #fff; }
+      .header-actions, .notice, details.assumptions, .footer { display: none !important; }
+      .layout { display: block; }
+      .panel, .results { position: static; box-shadow: none; }
+      .results { margin-top: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="header">
+      <div>
+        <p class="eyebrow">Manufacturing | Quality &amp; Cost Control</p>
+        <h1>NCR Cost Calculator</h1>
+        <p>Estimate inspection, rework and daily meeting costs for an NCR using your company’s component and rate assumptions.</p>
+      </div>
+      <div class="header-actions">
+        <button class="button primary" id="export-button" type="button">Export estimate CSV</button>
+        <button class="button" id="print-button" type="button">Print / Save PDF</button>
+      </div>
+    </header>
+
+    <p class="notice"><strong>How this estimate works:</strong> Enter the details for one NCR. Inspection/admin and daily meeting overheads are averaged across the weekly NCR count; entered rework and replacement-operation hours apply to this NCR. Employee time is costed at £105/hour.</p>
+
+    <div class="layout">
+      <section class="panel" aria-label="Estimate inputs">
+        <h2>NCR details</h2>
+        <p class="panel-intro">Enter one NCR’s details. Its estimated cost includes entered case-specific work plus its share of weekly inspection and meeting overheads.</p>
+        <div class="fields">
+          <div class="field">
+            <label for="ncr-start">NCR start date</label>
+            <input id="ncr-start" type="date">
+            <div class="unit">Date the NCR was raised</div>
+          </div>
+          <div class="field">
+            <label for="ncr-end">NCR end date</label>
+            <input id="ncr-end" type="date">
+            <div class="unit">Date closed; leave blank while open</div>
+          </div>
+          <div class="field">
+            <label for="ncr-count">Number of NCRs per week</label>
+            <input id="ncr-count" type="number" min="1" step="1" value="80">
+            <div class="unit">Weekly volume used to average inspection and meeting costs</div>
+          </div>
+          <fieldset class="field wide status-choice">
+            <legend>Component status</legend>
+            <div class="choice-list">
+              <label class="choice"><input type="radio" name="replacement-status" value="replaced" checked> Component Replaced</label>
+              <label class="choice"><input type="radio" name="replacement-status" value="not-replaced"> Component not Replaced</label>
+            </div>
+          </fieldset>
+        </div>
+
+        <section id="replaced-fields" class="scenario-fields">
+          <div class="section-rule">
+            <h3>Replacement details</h3>
+            <p class="panel-intro">Select a component, material, supplier and quantity. The calculator uses the component’s average market value where available and falls back to the relevant pump classification average for anything not priced.</p>
+          </div>
+          <div class="fields">
+            <div class="field wide">
+              <label for="component">Component</label>
+              <select id="component"></select>
+            </div>
+            <div class="field">
+              <label for="material">Material</label>
+              <select id="material"></select>
+            </div>
+            <div class="field">
+              <label for="supplier">Supplier</label>
+              <select id="supplier"></select>
+            </div>
+            <div class="field">
+              <label for="quantity">Quantity</label>
+              <input id="quantity" type="number" min="1" step="1" value="1">
+              <div class="unit">Number of components affected</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection" aria-labelledby="rework-title">
+          <h3 id="rework-title">Rework &amp; labour</h3>
+          <div class="fields">
+            <div class="field">
+              <label for="rework-hours">Rework &amp; labour hours for this NCR</label>
+              <input id="rework-hours" type="number" min="0" step="0.1" value="0">
+              <div class="unit">Total hours for this NCR</div>
+            </div>
+            <div class="field">
+              <span class="field-label">Employee hourly rate</span>
+              <div class="fixed-value">£105.00 / hour</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="subsection" aria-labelledby="inspection-title">
+          <h3 id="inspection-title">Inspection cost assumptions</h3>
+          <p class="panel-intro">The fixed 8 weekly inspection/admin hours include visual, NDT, HSE, scrapping and RCA work. Inspection cost per NCR = (weekly inspection/admin cost − scrap value) ÷ the number of NCRs above.</p>
+          <div class="fields">
+            <div class="field"><span class="field-label">Inspection and administration time</span><div class="fixed-value">8 hours / week</div></div>
+            <div class="field"><span class="field-label">Employee hourly rate</span><div class="fixed-value">£105.00 / hour</div></div>
+            <div class="field"><label for="scrap-value">Scrap value</label><input id="scrap-value" type="number" min="0" step="0.01" value="0"><div class="unit">£ total recovered value</div></div>
+          </div>
+        </section>
+
+        <section class="subsection" aria-labelledby="meeting-title">
+          <h3 id="meeting-title">Fixed daily meeting assumptions</h3>
+          <div class="fields">
+            <div class="field"><span class="field-label">Daily morning meeting</span><div class="fixed-value">7 minutes · 23 attendees · £105 / hour</div></div>
+            <div class="field"><span class="field-label">NCR daily meeting</span><div class="fixed-value">23 minutes · 7 attendees · £105 / hour</div></div>
+          </div>
+        </section>
+
+        <section id="replacement-cost-inputs" class="subsection" aria-labelledby="replacement-cost-title">
+          <h3 id="replacement-cost-title">Draft replacement operating costs</h3>
+          <p class="panel-intro">These time-based costs are added only when a component is replaced. Enter hours for this NCR; all employee time uses the fixed £105/hour rate.</p>
+          <div class="subsection">
+            <h3>Procurement</h3>
+            <div class="fields">
+              <div class="field"><label for="supplier-chasing-hours">Supplier chasing / communication time</label><input id="supplier-chasing-hours" type="number" min="0" step="0.1" value="0"><div class="unit">Hours for this NCR</div></div>
+              <div class="field"><label for="po-creation-hours">Purchase order creation time</label><input id="po-creation-hours" type="number" min="0" step="0.1" value="0"><div class="unit">Hours for this NCR</div></div>
+            </div>
+          </div>
+          <div class="subsection">
+            <h3>Scheduling &amp; planning</h3>
+            <div class="fields">
+              <div class="field"><label for="reschedule-count">Number of reschedules</label><input id="reschedule-count" type="number" min="0" step="1" value="0"><div class="unit">Times rescheduled for this NCR</div></div>
+              <div class="field"><label for="reschedule-hours">Time per reschedule</label><input id="reschedule-hours" type="number" min="0" step="0.1" value="0"><div class="unit">Hours each time</div></div>
+              <div class="field"><label for="replanning-hours">NCR replanning time</label><input id="replanning-hours" type="number" min="0" step="0.1" value="0"><div class="unit">Total hours for this NCR</div></div>
+            </div>
+          </div>
+          <div class="subsection">
+            <h3>Stores</h3>
+            <div class="fields">
+              <div class="field wide"><span class="field-label">Included fixed cost</span><div class="fixed-value">49 minutes per replaced NCR at £105.00 / hour = £85.75</div></div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <aside class="panel results" aria-live="polite" aria-label="Estimate results">
+        <div class="result-top">
+          <p class="eyebrow">Estimated NCR impact</p>
+          <p class="result-name" id="result-name">NCR estimate</p>
+          <div class="totals">
+            <div class="total overall"><div class="total-label">Total NCR cost</div><div class="total-value" id="total-cost">£0.00</div></div>
+            <div class="total"><div class="total-label">Total NCR time</div><div class="total-value" id="total-hours">0.00 <small>hrs</small></div></div>
+          </div>
+        </div>
+        <div class="result-body">
+          <h2>Cost breakdown</h2>
+          <p class="validation" id="validation" role="status"></p>
+          <table class="summary-table" aria-label="NCR cost breakdown">
+            <thead><tr><th>Cost input</th><th>Cost</th><th>Time</th></tr></thead>
+            <tbody id="cost-summary"></tbody>
+            <tfoot id="cost-total"></tfoot>
+          </table>
+          <p class="result-foot" id="result-foot"></p>
+        </div>
+      </aside>
+    </div>
+
+    <details class="assumptions" id="assumptions">
+      <summary>Edit company assumptions (saved in this browser)</summary>
+      <div class="settings">
+        <p class="settings-intro">Maintain components and their default material/supplier selections, plus the material and supplier lists. Material and supplier cost figures are retained for reference but are not included in this estimate. Settings are stored in this browser on this device; use “Download assumptions” to keep a backup.</p>
+        <section class="assumption-table">
+          <h3>Components</h3>
+          <div class="table-wrap"><table>
+            <thead><tr><th scope="col">Component</th><th scope="col">Material</th><th scope="col">Supplier</th><th scope="col">Remove</th></tr></thead>
+            <tbody id="components-rows"></tbody>
+          </table></div>
+          <button class="button" id="add-component" type="button">Add component</button>
+        </section>
+        <div class="settings-grid" style="margin-top: 18px">
+          <section>
+            <h3>Material unit values</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th scope="col">Material</th><th scope="col">Unit value (£)</th><th scope="col">Remove</th></tr></thead>
+              <tbody id="materials-rows"></tbody>
+            </table></div>
+            <button class="button" id="add-material" type="button">Add material</button>
+          </section>
+          <section>
+            <h3>Supplier assumptions</h3>
+            <div class="table-wrap"><table>
+              <thead><tr><th scope="col">Supplier</th><th scope="col">Lead time (days)</th><th scope="col">Handling (£)</th><th scope="col">Delay (£/day)</th><th scope="col">Remove</th></tr></thead>
+              <tbody id="suppliers-rows"></tbody>
+            </table></div>
+            <button class="button" id="add-supplier" type="button">Add supplier</button>
+          </section>
+        </div>
+        <div class="setting-actions">
+          <button class="button" id="download-assumptions" type="button">Download assumptions</button>
+          <label class="button" for="import-assumptions">Load assumptions</label>
+          <input id="import-assumptions" type="file" accept=".json,application/json" hidden>
+          <button class="button danger" id="reset-assumptions" type="button">Reset assumptions</button>
+          <span class="save-state" id="save-state" role="status"></span>
+        </div>
+      </div>
+    </details>
+    <footer class="footer"><span>Internal planning estimate only — confirm rates and scope with Finance / Procurement.</span><a href="index.html">Back to NCR infographic</a></footer>
+  </main>
+  <script>
+    (() => {
+      "use strict";
+      const STORAGE_KEY = "componentLossCalculatorAssumptions-v1";
+      const DATA_SOURCE_URL = "/api/components";
+      const HOURLY_RATE = 105;
+      const FACTORED_COMPONENT_COST = 850;
+      const NON_FACTORED_COMPONENT_COST = 450;
+      const STANDARD_HARDWARE_COMPONENT_COST = 40;
+      const COMPONENT_AVERAGE_MARKET_PRICES = new Map([
+        ["vibration probe", 780],
+        ["vibration monitor", 1250],
+        ["temperature indicator", 700],
+        ["terminal box", 520],
+        ["pressure indicator", 900],
+        ["oil level indicator", 650],
+        ["manifold", 1100],
+        ["lube oil system", 1600],
+        ["measuring instrument", 950],
+        ["instrument panel", 780],
+        ["cooler", 1350],
+        ["coupling", 1800],
+        ["fluid coupling", 2500],
+        ["gearbox", 4800],
+        ["motor", 6500],
+        ["variable frequency drive", 4200],
+        ["vfd", 4200],
+        ["seal system", 2100],
+        ["avm", 1800],
+        ["impeller", 1700],
+        ["pump shaft", 2400],
+        ["pump case", 2800],
+        ["diffuser", 1300],
+        ["suction cover", 1500],
+        ["discharge cover", 1400],
+        ["basin plate", 900],
+        ["baseplate", 950]
+      ]);
+      const FACTORED_COMPONENT_NAMES = new Set([
+        "vibration probe",
+        "vibration monitor",
+        "temperature indicator",
+        "temperature",
+        "terminal box",
+        "pressure indicator",
+        "oil level indicator",
+        "manifold",
+        "lube oil system",
+        "measuring instrument",
+        "instrument panel",
+        "cooler",
+        "coupling",
+        "fluid coupling",
+        "gearbox",
+        "motor",
+        "variable frequency drive",
+        "vfd",
+        "seal system",
+        "mechanical seal",
+        "mechanical seal parts",
+        "seal assembly",
+        "avm",
+        "bearing housing",
+        "bearing end cover",
+        "impeller",
+        "pump shaft",
+        "pump case",
+        "diffuser",
+        "baseplate",
+        "suction cover",
+        "discharge cover",
+        "volute case",
+        "thrust bearing",
+        "journal bearing",
+        "pump cartridge"
+      ]);
+      const STANDARD_HARDWARE_COMPONENT_NAMES = new Set([
+        "bolt",
+        "cap nut",
+        "nut",
+        "screw",
+        "hexagon head screw",
+        "set screw",
+        "washer",
+        "o ring",
+        "gasket",
+        "stud",
+        "fastener",
+        "key",
+        "cable gland",
+        "cable entry",
+        "cable",
+        "label",
+        "nameplate",
+        "cover insert",
+        "plug",
+        "threaded plug",
+        "pipe fitting",
+        "tube fitting",
+        "eyebolt",
+        "jack screw"
+      ]);
+      const INSPECTION_HOURS_PER_WEEK = 8;
+      const MORNING_MEETING = { attendees: 23, minutes: 7 };
+      const NCR_MEETING = { attendees: 7, minutes: 23 };
+      const initialAssumptions = {
+        components: [
+          { name: "Air Release Filter", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Bellows", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Blind Flange", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Bolt", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Cable", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Cable Entry", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Cable Gland", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Cap Nut", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Cooling Coil", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Cooler", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Coupling", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Coupling Guard", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Coupling Part", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Eyebolt", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Flange", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Flexible Coupling", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Fluid Coupling", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Gate Valve", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Gearbox", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Guard", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Hexagon Head Screw", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Instrument Panel", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Jack Screw", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Journal Bearing", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Key", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Label", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Lube Oil System", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Mechanical Seal", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Mechanical Seal Parts", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Measuring Instrument", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Motor", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Nameplate", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Nut", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Oil Level Indicator", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Orifice", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "O-Ring", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Pipe Fitting", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Plug", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Pressure Indicator", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Pump Cartridge", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Pump Package", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Screw", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Seal System", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Set Screw", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Sleeve Coupling", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Spares and Repairs", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Stud", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Temperature Indicator", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Terminal Box", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Thermo-Well", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Threaded Plug", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Thrust Bearing", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Tool", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Tube Fitting", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Valve", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Valve Seat", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Variable Frequency Drive (VFD)", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Vibration Monitor", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Vibration Probe", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Weld Neck Flange", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Backing Ring", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Balance Drum", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Bar", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Baseplate", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Bearing Bushing", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Bearing Cover", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Bearing End Cover", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Bearing Housing", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Bearing Housing Lower Half", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Bearing Housing Upper Half", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Bowl", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Bracket", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Can/Barrel", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Cap", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Carriage", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Case", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Center Bushing", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Center Sleeve", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Centering Ring", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Column Pipe", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Cover Insert", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Diffuser", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Diffuser Last Stage", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Discharge Case", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Discharge Cover", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Discharge Head", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Dowel Pin", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Driver Stand", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Foot", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Impeller", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Impeller Ring", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Inner Case", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Interstage Bushing", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Lock Piece", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Manifold", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Oil Ring", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Pipe", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Piping Assembly", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Plate", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Pump Case", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Pump Shaft", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Retainer", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Ring", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Seal Ring", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Shaft", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Shaft Nut", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Shaft Sleeve", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Shim", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Split Ring", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Stand", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Stationary Ring", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Suction & Discharge Head", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Suction Bell", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Suction Case", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Suction Cover", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Suction Impeller", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Support", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Taper Pin", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Throttle Bushing", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Throttle Sleeve", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Thrust Collar", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Volute Case", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Wear Ring", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Washer", classification: "non-factored", materialIndex: 0, supplierIndex: 0 }
+        ],
+        materials: [{ name: "Enter material", unitCost: 0 }],
+        suppliers: [{ name: "Enter supplier", leadDays: 0, handling: 0, delayPerDay: 0 }]
+      };
+      function normalizeComponentName(name) {
+        return String(name || "").toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+      }
+      function deriveComponentClassification(name) {
+        const normalized = normalizeComponentName(name);
+        if (!normalized) return "non-factored";
+
+        const hardWareTokens = [
+          "bolt", "nut", "cap nut", "screw", "washer", "gasket", "stud",
+          "fastener", "key", "cable", "label", "nameplate", "cover insert",
+          "plug", "threaded plug", "pipe fitting", "tube fitting", "eyebolt",
+          "jack screw", "set screw", "hexagon head screw", "o ring"
+        ];
+
+        if (STANDARD_HARDWARE_COMPONENT_NAMES.has(normalized)) {
+          return "standard-hardware";
+        }
+
+        if (hardWareTokens.some((token) => normalized === token || normalized.includes(token))) {
+          return "standard-hardware";
+        }
+
+        if (FACTORED_COMPONENT_NAMES.has(normalized)) {
+          return "factored";
+        }
+
+        if (normalized.includes("vibration")
+          || normalized.includes("temperature indicator")
+          || normalized.includes("instrument panel")
+          || normalized.includes("pressure indicator")
+          || normalized.includes("oil level")
+          || normalized.includes("coupling")
+          || normalized.includes("gearbox")
+          || normalized.includes("fluid coupling")
+          || normalized.includes("vfd")
+          || normalized.includes("motor")
+          || normalized.includes("avm")
+          || normalized.includes("cooler")
+          || normalized.includes("seal system")
+          || normalized.includes("mechanical seal")
+          || normalized.includes("thrust bearing")
+          || normalized.includes("journal bearing")) {
+          return "factored";
+        }
+
+        return "non-factored";
+      }
+      function getReplacementCostBasis(componentName) {
+        const normalized = normalizeComponentName(componentName);
+        if (!normalized) {
+          return { cost: NON_FACTORED_COMPONENT_COST, label: "Replacement material (non-factored avg)" };
+        }
+        const directMatch = COMPONENT_AVERAGE_MARKET_PRICES.get(normalized);
+        if (typeof directMatch === "number") {
+          return { cost: directMatch, label: "Replacement material (component market avg)" };
+        }
+        for (const [name, price] of COMPONENT_AVERAGE_MARKET_PRICES.entries()) {
+          if (normalized.includes(name) || name.includes(normalized)) {
+            return { cost: price, label: "Replacement material (component market avg)" };
+          }
+        }
+        const classification = deriveComponentClassification(normalized);
+        if (classification === "standard-hardware") {
+          return { cost: STANDARD_HARDWARE_COMPONENT_COST, label: "Replacement material (standard hardware avg)" };
+        }
+        if (classification === "factored") {
+          return { cost: FACTORED_COMPONENT_COST, label: "Replacement material (factored avg)" };
+        }
+        return { cost: NON_FACTORED_COMPONENT_COST, label: "Replacement material (non-factored avg)" };
+      }
+      function fixedComponentReplacementCost(componentName) {
+        return getReplacementCostBasis(componentName).cost;
+      }
+      const numericInputs = [
+        "ncr-count", "quantity", "rework-hours", "scrap-value",
+        "supplier-chasing-hours", "po-creation-hours", "reschedule-count",
+        "reschedule-hours", "replanning-hours"
+      ];
+      let assumptions = loadAssumptions();
+      const $ = (id) => document.getElementById(id);
+      const isComponentReplaced = () => document.querySelector('input[name="replacement-status"]:checked').value === "replaced";
+      const getNumber = (id) => {
+        const input = $(id);
+        const value = Number(input.value);
+        return input.value.trim() !== "" && Number.isFinite(value) && value >= 0 ? value : 0;
+      };
+      const money = (value) => new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP" }).format(value);
+      const hours = (value) => `${value.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} hrs`;
+      const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[char]);
+      function normalizeAssumptions(value) {
+        const safeMaterials = Array.isArray(value && value.materials) && value.materials.length
+          ? value.materials.map((item) => ({
+              name: String(item && item.name ? item.name : "Enter material"),
+              unitCost: Number(item && Number.isFinite(Number(item.unitCost)) ? Number(item.unitCost) : 0)
+            }))
+          : structuredClone(initialAssumptions.materials);
+        const safeSuppliers = Array.isArray(value && value.suppliers) && value.suppliers.length
+          ? value.suppliers.map((item) => ({
+              name: String(item && item.name ? item.name : "Enter supplier"),
+              leadDays: Number(item && Number.isFinite(Number(item.leadDays)) ? Number(item.leadDays) : 0),
+              handling: Number(item && Number.isFinite(Number(item.handling)) ? Number(item.handling) : 0),
+              delayPerDay: Number(item && Number.isFinite(Number(item.delayPerDay)) ? Number(item.delayPerDay) : 0)
+            }))
+          : structuredClone(initialAssumptions.suppliers);
+        const safeComponents = Array.isArray(value && value.components) && value.components.length
+          ? value.components.map((component) => ({
+              name: String(component && component.name ? component.name : "New component"),
+              classification: deriveComponentClassification(component && component.name ? component.name : "New component"),
+              materialIndex: Number.isInteger(Number(component && component.materialIndex)) ? Number(component.materialIndex) : 0,
+              supplierIndex: Number.isInteger(Number(component && component.supplierIndex)) ? Number(component.supplierIndex) : 0
+            }))
+          : structuredClone(initialAssumptions.components).map((component) => ({
+              ...component,
+              classification: deriveComponentClassification(component.name)
+            }));
+        return { materials: safeMaterials, suppliers: safeSuppliers, components: safeComponents };
+      }
+      function loadAssumptions() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          if (saved && Array.isArray(saved.materials) && Array.isArray(saved.suppliers)) {
+            return normalizeAssumptions(saved);
+          }
+        } catch (error) {
+          console.warn("Saved calculator assumptions could not be loaded.", error);
+        }
+        return structuredClone(initialAssumptions);
+      }
+      async function loadRemoteAssumptions() {
+        try {
+          const response = await fetch(DATA_SOURCE_URL, { cache: "no-store" });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          const remote = normalizeAssumptions(await response.json());
+          assumptions = remote;
+          saveAssumptions();
+          renderSettings();
+          return true;
+        } catch (error) {
+          console.warn("Remote component source could not be loaded; using the local default set.", error);
+          return false;
+        }
+      }
+      function saveAssumptions() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(assumptions));
+          $("save-state").textContent = "Saved in this browser";
+        } catch (error) {
+          $("save-state").textContent = "Could not save — use Download assumptions";
+          console.error("Calculator assumptions could not be saved.", error);
+        }
+      }
+      function selectedItem(list, selectId) {
+        const value = $(selectId).value;
+        if (value === "") return null;
+        const index = Number(value);
+        return Number.isInteger(index) ? list[index] || null : null;
+      }
+      function optionsHtml(items, selectedIndex, emptyLabel) {
+        const options = [`<option value="">${escapeHtml(emptyLabel)}</option>`];
+        items.forEach((item, index) => {
+          options.push(`<option value="${index}"${String(index) === String(selectedIndex) ? " selected" : ""}>${escapeHtml(item.name || emptyLabel)}</option>`);
+        });
+        return options.join("");
+      }
+      function setSelectOptions(select, items, emptyLabel, selectedValue = select.value) {
+        select.innerHTML = optionsHtml(items, selectedValue, emptyLabel);
+        if (selectedValue !== "" && items[Number(selectedValue)]) select.value = selectedValue;
+        else select.value = "";
+      }
+      function sortComponentsByName(items) {
+        return [...items].sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), undefined, { sensitivity: "base" }));
+      }
+      function refreshEstimateOptions() {
+        const componentSelect = $("component");
+        const priorComponent = componentSelect.value;
+        const sorted = sortComponentsByName(assumptions.components).map((component) => ({ component, index: assumptions.components.indexOf(component) }));
+        componentSelect.innerHTML = optionsHtml(sorted.map(({ component }) => component), "", "Choose a component");
+        sorted.forEach(({ component, index }) => {
+          componentSelect.options[index + 1].value = String(index);
+        });
+        if (sorted.some(({ index }) => String(index) === priorComponent)) componentSelect.value = priorComponent;
+        setSelectOptions($("material"), assumptions.materials, "Choose a material");
+        setSelectOptions($("supplier"), assumptions.suppliers, "Choose a supplier");
+      }
+      function renderSettings() {
+        $("materials-rows").innerHTML = assumptions.materials.map((material, index) => `
+          <tr>
+            <td><input aria-label="Material ${index + 1} name" data-list="materials" data-index="${index}" data-key="name" value="${escapeHtml(material.name)}"></td>
+            <td><input aria-label="Material ${index + 1} unit value in pounds" data-list="materials" data-index="${index}" data-key="unitCost" type="number" min="0" step="0.01" value="${Number(material.unitCost) || 0}"></td>
+            <td><button class="row-delete" type="button" data-remove="materials" data-index="${index}" aria-label="Remove material ${index + 1}">Remove</button></td>
+          </tr>`).join("");
+        $("suppliers-rows").innerHTML = assumptions.suppliers.map((supplier, index) => `
+          <tr>
+            <td><input aria-label="Supplier ${index + 1} name" data-list="suppliers" data-index="${index}" data-key="name" value="${escapeHtml(supplier.name)}"></td>
+            <td><input aria-label="Supplier ${index + 1} lead time in days" data-list="suppliers" data-index="${index}" data-key="leadDays" type="number" min="0" step="0.5" value="${Number(supplier.leadDays) || 0}"></td>
+            <td><input aria-label="Supplier ${index + 1} handling cost in pounds" data-list="suppliers" data-index="${index}" data-key="handling" type="number" min="0" step="0.01" value="${Number(supplier.handling) || 0}"></td>
+            <td><input aria-label="Supplier ${index + 1} delay cost per day in pounds" data-list="suppliers" data-index="${index}" data-key="delayPerDay" type="number" min="0" step="0.01" value="${Number(supplier.delayPerDay) || 0}"></td>
+            <td><button class="row-delete" type="button" data-remove="suppliers" data-index="${index}" aria-label="Remove supplier ${index + 1}">Remove</button></td>
+          </tr>`).join("");
+        $("components-rows").innerHTML = sortComponentsByName(assumptions.components).map((component) => {
+          const index = assumptions.components.indexOf(component);
+          return `
+          <tr>
+            <td><input aria-label="Component ${index + 1} name" data-list="components" data-index="${index}" data-key="name" value="${escapeHtml(component.name)}"></td>
+            <td><select aria-label="Component ${index + 1} material" data-list="components" data-index="${index}" data-key="materialIndex">${optionsHtml(assumptions.materials, component.materialIndex, "Choose material")}</select></td>
+            <td><select aria-label="Component ${index + 1} supplier" data-list="components" data-index="${index}" data-key="supplierIndex">${optionsHtml(assumptions.suppliers, component.supplierIndex, "Choose supplier")}</select></td>
+            <td><button class="row-delete" type="button" data-remove="components" data-index="${index}" aria-label="Remove component ${index + 1}">Remove</button></td>
+          </tr>`;
+        }).join("");
+        refreshEstimateOptions();
+        renderResults();
+      }
+      function openWeekdays(startValue, endValue) {
+        if (!startValue) return 0;
+        const start = new Date(`${startValue}T00:00:00Z`);
+        const end = new Date(`${endValue || new Date().toISOString().slice(0, 10)}T00:00:00Z`);
+        if (!Number.isFinite(start.getTime()) || !Number.isFinite(end.getTime()) || end < start) return 0;
+        let weekdays = 0;
+        for (const date = new Date(start); date <= end; date.setUTCDate(date.getUTCDate() + 1)) {
+          const day = date.getUTCDay();
+          if (day !== 0 && day !== 6) weekdays++;
+        }
+        return weekdays;
+      }
+      function meetingCost(attendees, minutes, weekdays) {
+        const attendeeHoursPerDay = attendees * minutes / 60;
+        const totalHours = attendeeHoursPerDay * weekdays;
+        return { cost: totalHours * HOURLY_RATE, hours: totalHours };
+      }
+      function renderResults() {
+        const ncrCount = Math.floor(getNumber("ncr-count"));
+        const hasCalendarStart = Boolean($("ncr-start").value);
+        const weekdays = openWeekdays($("ncr-start").value, $("ncr-end").value);
+        const hasCalendarPeriod = hasCalendarStart && weekdays > 0;
+        const inspectionHoursPerNcr = hasCalendarPeriod && ncrCount > 0 ? INSPECTION_HOURS_PER_WEEK / ncrCount : 0;
+        const inspectionCost = hasCalendarPeriod && ncrCount > 0
+          ? (INSPECTION_HOURS_PER_WEEK * HOURLY_RATE - getNumber("scrap-value")) / ncrCount
+          : 0;
+        const ncrMeetingTotal = meetingCost(NCR_MEETING.attendees, NCR_MEETING.minutes, weekdays);
+        const morningMeetingTotal = meetingCost(MORNING_MEETING.attendees, MORNING_MEETING.minutes, weekdays);
+        const meetingDivisor = ncrCount;
+        const ncrMeeting = {
+          cost: meetingDivisor > 0 ? ncrMeetingTotal.cost / meetingDivisor : 0,
+          hours: meetingDivisor > 0 ? ncrMeetingTotal.hours / meetingDivisor : 0
+        };
+        const morningMeeting = {
+          cost: meetingDivisor > 0 ? morningMeetingTotal.cost / meetingDivisor : 0,
+          hours: meetingDivisor > 0 ? morningMeetingTotal.hours / meetingDivisor : 0
+        };
+        const reworkHours = getNumber("rework-hours");
+        const reworkCost = reworkHours * HOURLY_RATE;
+        const supplierChasingHours = getNumber("supplier-chasing-hours");
+        const poCreationHours = getNumber("po-creation-hours");
+        const procurementHours = supplierChasingHours + poCreationHours;
+        const reschedulingHours = getNumber("reschedule-count") * getNumber("reschedule-hours");
+        const replanningHours = getNumber("replanning-hours");
+        const schedulingHours = reschedulingHours + replanningHours;
+        const fixedStoresMinutes = 49;
+        const storesHours = fixedStoresMinutes / 60;
+        const selectedComponent = isComponentReplaced() ? selectedItem(assumptions.components, "component") : null;
+        const selectedMaterial = isComponentReplaced() ? selectedItem(assumptions.materials, "material") : null;
+        const selectedSupplier = isComponentReplaced() ? selectedItem(assumptions.suppliers, "supplier") : null;
+        const quantity = Math.floor(getNumber("quantity"));
+        const replacementBasis = selectedComponent ? getReplacementCostBasis(selectedComponent.name) : { cost: NON_FACTORED_COMPONENT_COST, label: "Replacement material (non-factored avg)" };
+        const componentClassification = selectedComponent ? deriveComponentClassification(selectedComponent.name) : "non-factored";
+        const replacementMaterialCost = selectedComponent ? replacementBasis.cost * quantity : 0;
+        const componentReplacementLabel = replacementBasis.label;
+        const supplierHandlingCost = Number(selectedSupplier && selectedSupplier.handling) || 0;
+        const supplierDelayCost = (Number(selectedSupplier && selectedSupplier.leadDays) || 0) *
+          (Number(selectedSupplier && selectedSupplier.delayPerDay) || 0);
+        const replacementRows = isComponentReplaced() ? [
+          [componentReplacementLabel, replacementMaterialCost, 0],
+          ["Supplier handling", supplierHandlingCost, 0],
+          ["Supplier delay", supplierDelayCost, 0],
+          ["Procurement", procurementHours * HOURLY_RATE, procurementHours],
+          ["Scheduling & planning", schedulingHours * HOURLY_RATE, schedulingHours],
+          ["Stores scanning / logistics", storesHours * HOURLY_RATE, storesHours]
+        ] : [];
+        const rows = [
+          ["Inspection & administration", inspectionCost, inspectionHoursPerNcr],
+          ["NCR daily meeting", ncrMeeting.cost, ncrMeeting.hours],
+          ["Daily morning meeting", morningMeeting.cost, morningMeeting.hours],
+          ["Rework & labour", reworkCost, reworkHours],
+          ...replacementRows
+        ];
+        const totalCost = rows.reduce((total, row) => total + row[1], 0);
+        const totalHours = rows.reduce((total, row) => total + row[2], 0);
+        $("result-name").textContent = `NCR estimate · ${isComponentReplaced()
+          ? `Component replaced · ${Math.floor(getNumber("quantity")).toLocaleString("en-GB")} component${getNumber("quantity") === 1 ? "" : "s"}`
+          : "Component not replaced"}`;
+        $("total-cost").textContent = money(totalCost);
+        $("total-hours").innerHTML = `${totalHours.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <small>hrs</small>`;
+        $("cost-summary").innerHTML = rows.map(([name, cost, time]) =>
+          `<tr><td>${name}</td><td>${money(cost)}</td><td>${hours(time)}</td></tr>`).join("");
+        $("cost-total").innerHTML = `<tr><td>Total</td><td>${money(totalCost)}</td><td>${hours(totalHours)}</td></tr>`;
+        const warnings = [];
+        if (ncrCount < 1) warnings.push("Enter at least one NCR per week to calculate average inspection and meeting costs.");
+        if (getNumber("quantity") < 1 && isComponentReplaced()) warnings.push("Enter a quantity of at least 1.");
+        if ($("ncr-start").value && $("ncr-end").value && $("ncr-end").value < $("ncr-start").value) warnings.push("NCR end date must be on or after its start date.");
+        if (!$("ncr-start").value && (NCR_MEETING.minutes || MORNING_MEETING.minutes)) warnings.push("Enter the NCR start date to calculate daily meeting costs.");
+        if ($("ncr-start").value && !$("ncr-end").value) warnings.push(`NCR is treated as open through today (${weekdays} weekdays counted).`);
+        $("validation").textContent = warnings.join(" ");
+        $("validation").classList.toggle("visible", warnings.length > 0);
+        $("result-foot").textContent = `Inspection/admin and daily meeting costs are averaged across ${ncrCount} NCRs per week. Replaced components use the selected component market average when available (${replacementBasis.cost} × quantity); otherwise they fall back to the relevant pump classification average, plus one supplier handling charge, supplier delay cost × lead days, entered Procurement and Scheduling & planning time, and a fixed 49-minute stores allowance at £${HOURLY_RATE}/hour.`;
+      }
+      function updateReplacementFields() {
+        const isReplaced = isComponentReplaced();
+        $("replaced-fields").hidden = !isReplaced;
+        $("replacement-cost-inputs").hidden = !isReplaced;
+        if (isReplaced) refreshEstimateOptions();
+        renderResults();
+      }
+      function applyComponentDefaults() {
+        const component = selectedItem(assumptions.components, "component");
+        if (!component) return;
+        $("material").value = component.materialIndex >= 0 ? String(component.materialIndex) : "";
+        $("supplier").value = component.supplierIndex >= 0 ? String(component.supplierIndex) : "";
+        renderResults();
+      }
+      function exportCsv() {
+        const component = isComponentReplaced() ? selectedItem(assumptions.components, "component") : null;
+        const material = isComponentReplaced() ? selectedItem(assumptions.materials, "material") : null;
+        const supplier = isComponentReplaced() ? selectedItem(assumptions.suppliers, "supplier") : null;
+        const rows = [
+          ["NCR cost estimate", ""],
+          ["NCR start date", $("ncr-start").value],
+          ["NCR end date", $("ncr-end").value],
+          ["NCRs per week", Math.floor(getNumber("ncr-count"))],
+          ["Inspection/admin hours per week", INSPECTION_HOURS_PER_WEEK],
+          ["Employee hourly rate (GBP)", HOURLY_RATE],
+          ["Morning meeting assumptions", `${MORNING_MEETING.minutes} minutes; ${MORNING_MEETING.attendees} attendees`],
+          ["NCR meeting assumptions", `${NCR_MEETING.minutes} minutes; ${NCR_MEETING.attendees} attendees`],
+          ["Component status", isComponentReplaced() ? "Component Replaced" : "Component not Replaced"],
+          ["Component", component && component.name ? component.name : ""],
+          ["Material", material && material.name ? material.name : ""],
+          ["Material unit value (GBP)", material ? Number(material.unitCost) || 0 : ""],
+          ["Supplier", supplier && supplier.name ? supplier.name : ""],
+          ["Supplier lead time (days)", supplier ? Number(supplier.leadDays) || 0 : ""],
+          ["Supplier handling cost (GBP)", supplier ? Number(supplier.handling) || 0 : ""],
+          ["Supplier delay cost per day (GBP)", supplier ? Number(supplier.delayPerDay) || 0 : ""],
+          ["Quantity", isComponentReplaced() ? Math.floor(getNumber("quantity")) : ""],
+          ["Supplier chasing / communication hours", isComponentReplaced() ? getNumber("supplier-chasing-hours") : ""],
+          ["Purchase order creation hours", isComponentReplaced() ? getNumber("po-creation-hours") : ""],
+          ["Number of reschedules", isComponentReplaced() ? getNumber("reschedule-count") : ""],
+          ["Hours per reschedule", isComponentReplaced() ? getNumber("reschedule-hours") : ""],
+          ["NCR replanning hours", isComponentReplaced() ? getNumber("replanning-hours") : ""],
+          ["Stores scanning / logistics hours", isComponentReplaced() ? 49 / 60 : ""],
+          ["Estimated total cost (GBP)", $("total-cost").textContent.replace(/[£,]/g, "")],
+          ["Estimated total time (hours)", $("total-hours").textContent.replace(/\s*hrs\s*/, "")],
+          [],
+          ["Cost input", "Cost (GBP)", "Time (hours)"],
+          ...Array.from($("cost-summary").children, (row) => Array.from(row.children, (cell) => cell.textContent)),
+          ...Array.from($("cost-total").children, (row) => Array.from(row.children, (cell) => cell.textContent))
+        ];
+        const csv = rows.map((row) => row.map((cell) => `"${String(cell !== null && cell !== undefined ? cell : "").replace(/"/g, '""')}"`).join(",")).join("\r\n");
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+        link.download = "ncr-cost-estimate.csv";
+        link.click();
+        URL.revokeObjectURL(link.href);
+      }
+      function downloadAssumptions() {
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(new Blob([JSON.stringify(assumptions, null, 2)], { type: "application/json" }));
+        link.download = "ncr-company-assumptions.json";
+        link.click();
+        URL.revokeObjectURL(link.href);
+      }
+      function validateAssumptions(value) {
+        const isValidList = (items, numericKeys) => Array.isArray(items) && items.every((item) =>
+          item && typeof item.name === "string" && item.name.trim() &&
+          numericKeys.every((key) => Number.isFinite(Number(item[key])) && Number(item[key]) >= 0));
+        const validComponents = Array.isArray(value && value.components) && value.components.every((component) =>
+          component && typeof component.name === "string" && component.name.trim() &&
+          ["factored", "non-factored", "standard-hardware"].includes(component.classification) &&
+          Number.isInteger(Number(component.materialIndex)) &&
+          Number(component.materialIndex) >= -1 && Number(component.materialIndex) < value.materials.length &&
+          Number.isInteger(Number(component.supplierIndex)) &&
+          Number(component.supplierIndex) >= -1 && Number(component.supplierIndex) < value.suppliers.length);
+        return value && isValidList(value.materials, ["unitCost"]) &&
+          isValidList(value.suppliers, ["leadDays", "handling", "delayPerDay"]) &&
+          (value.components === undefined || validComponents);
+      }
+      function refreshComponentAssumptionSelects() {
+        document.querySelectorAll('#components-rows select[data-key="materialIndex"]').forEach((select) => {
+          const component = assumptions.components[Number(select.dataset.index)];
+          select.innerHTML = optionsHtml(assumptions.materials, component.materialIndex, "Choose material");
+        });
+        document.querySelectorAll('#components-rows select[data-key="supplierIndex"]').forEach((select) => {
+          const component = assumptions.components[Number(select.dataset.index)];
+          select.innerHTML = optionsHtml(assumptions.suppliers, component.supplierIndex, "Choose supplier");
+        });
+      }
+
+      numericInputs.forEach((id) => $(id).addEventListener("input", renderResults));
+      ["ncr-start", "ncr-end"].forEach((id) => $(id).addEventListener("change", renderResults));
+      document.querySelectorAll('input[name="replacement-status"]').forEach((input) => input.addEventListener("change", updateReplacementFields));
+      $("component").addEventListener("change", applyComponentDefaults);
+      ["material", "supplier"].forEach((id) => $(id).addEventListener("change", renderResults));
+      $("materials-rows").addEventListener("input", (event) => {
+        const input = event.target;
+        if (!input.matches("[data-list]")) return;
+        const index = Number(input.dataset.index);
+        const key = input.dataset.key;
+        assumptions.materials[index][key] = key === "name" ? input.value : Math.max(0, Number(input.value) || 0);
+        saveAssumptions();
+        refreshComponentAssumptionSelects();
+        refreshEstimateOptions();
+      });
+      $("suppliers-rows").addEventListener("input", (event) => {
+        const input = event.target;
+        if (!input.matches("[data-list]")) return;
+        const index = Number(input.dataset.index);
+        const key = input.dataset.key;
+        assumptions.suppliers[index][key] = key === "name" ? input.value : Math.max(0, Number(input.value) || 0);
+        saveAssumptions();
+        refreshComponentAssumptionSelects();
+        refreshEstimateOptions();
+      });
+      $("components-rows").addEventListener("input", (event) => {
+        const input = event.target;
+        if (!input.matches("[data-list]")) return;
+        const index = Number(input.dataset.index);
+        const key = input.dataset.key;
+        const value = key === "name" ? input.value : input.value;
+        assumptions.components[index][key] = ["materialIndex", "supplierIndex"].includes(key)
+          ? (value === "" ? -1 : Number(value))
+          : value;
+        if (key === "name") {
+          assumptions.components[index].classification = deriveComponentClassification(value);
+        }
+        saveAssumptions();
+        refreshEstimateOptions();
+      });
+      $("components-rows").addEventListener("change", (event) => {
+        const select = event.target;
+        if (!select.matches('select[data-list="components"]')) return;
+        const index = Number(select.dataset.index);
+        const key = select.dataset.key;
+        assumptions.components[index][key] = ["materialIndex", "supplierIndex"].includes(key)
+          ? (select.value === "" ? -1 : Number(select.value))
+          : select.value;
+        saveAssumptions();
+        refreshEstimateOptions();
+      });
+      document.querySelector(".settings").addEventListener("click", (event) => {
+        const button = event.target.closest("[data-remove]");
+        if (!button) return;
+        const listName = button.dataset.remove;
+        const removedIndex = Number(button.dataset.index);
+        assumptions[listName].splice(removedIndex, 1);
+        if (listName === "materials" || listName === "suppliers") {
+          const referenceKey = listName === "materials" ? "materialIndex" : "supplierIndex";
+          assumptions.components.forEach((component) => {
+            if (component[referenceKey] === removedIndex) component[referenceKey] = -1;
+            else if (component[referenceKey] > removedIndex) component[referenceKey]--;
+          });
+        }
+        saveAssumptions();
+        renderSettings();
+      });
+      $("add-component").addEventListener("click", () => {
+        assumptions.components.push({
+          name: "New component",
+          classification: deriveComponentClassification("New component"),
+          materialIndex: assumptions.materials.length ? 0 : -1,
+          supplierIndex: assumptions.suppliers.length ? 0 : -1
+        });
+        saveAssumptions();
+        renderSettings();
+        $("assumptions").open = true;
+        $("components-rows").lastElementChild.querySelector('[data-key="name"]').focus();
+      });
+      $("add-material").addEventListener("click", () => {
+        assumptions.materials.push({ name: "New material", unitCost: 0 });
+        saveAssumptions();
+        renderSettings();
+        $("assumptions").open = true;
+        $("materials-rows").lastElementChild.querySelector('[data-key="name"]').focus();
+      });
+      $("add-supplier").addEventListener("click", () => {
+        assumptions.suppliers.push({ name: "New supplier", leadDays: 0, handling: 0, delayPerDay: 0 });
+        saveAssumptions();
+        renderSettings();
+        $("assumptions").open = true;
+        $("suppliers-rows").lastElementChild.querySelector('[data-key="name"]').focus();
+      });
+      $("reset-assumptions").addEventListener("click", () => {
+        if (!window.confirm("Reset component, material and supplier assumptions to the original blank values?")) return;
+        assumptions = structuredClone(initialAssumptions);
+        saveAssumptions();
+        renderSettings();
+      });
+      $("download-assumptions").addEventListener("click", downloadAssumptions);
+      $("import-assumptions").addEventListener("change", async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        try {
+          const imported = JSON.parse(await file.text());
+          if (!validateAssumptions(imported)) {
+            $("save-state").textContent = "Import failed: check the file's component, material and supplier fields.";
+            return;
+          }
+          if (!window.confirm("Replace the current component, material and supplier assumptions with this file?")) return;
+          assumptions = { ...imported, components: imported.components || [] };
+          saveAssumptions();
+          renderSettings();
+          $("assumptions").open = true;
+        } catch (error) {
+          $("save-state").textContent = "Import failed: the selected file could not be read as valid JSON.";
+          console.error("Calculator assumptions could not be imported.", error);
+        } finally {
+          event.target.value = "";
+        }
+      });
+      $("export-button").addEventListener("click", exportCsv);
+      $("print-button").addEventListener("click", () => window.print());
+      loadRemoteAssumptions().finally(() => {
+        renderSettings();
+        updateReplacementFields();
+      });
+    })();
+  </script>
+</body>
+</html>
