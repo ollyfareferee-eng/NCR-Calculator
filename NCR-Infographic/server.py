@@ -314,4 +314,4 @@ if __name__ == "__main__":
     print(f"Starting NCR calculator backend on http://localhost:{PORT}")
     print(f"Component data: http://localhost:{PORT}/api/components")
     print(f"Data sync endpoint: http://localhost:{PORT}/api/sync")
-    ThreadingHTTPServer(("127.0.0.1", PORT), CalculatorHandler).serve_forever()
+    ThreadingHTTPServer(("0.0.0.0", PORT), CalculatorHandler).serve_forever()
