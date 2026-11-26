@@ -1,0 +1,1116 @@
+{
+  "materials": [
+    {
+      "name": "Alloy Steel",
+      "unitCost": 21.5
+    },
+    {
+      "name": "Aluminium",
+      "unitCost": 14.3
+    },
+    {
+      "name": "Bronze",
+      "unitCost": 16
+    },
+    {
+      "name": "Carbon Steel",
+      "unitCost": 12.5
+    },
+    {
+      "name": "Cast Iron",
+      "unitCost": 11.25
+    },
+    {
+      "name": "Chrome Steel",
+      "unitCost": 24.5
+    },
+    {
+      "name": "Mild Steel",
+      "unitCost": 10.8
+    },
+    {
+      "name": "Nickel Alloy",
+      "unitCost": 32
+    },
+    {
+      "name": "Rubber",
+      "unitCost": 8.4
+    },
+    {
+      "name": "Stainless Steel",
+      "unitCost": 18.75
+    }
+  ],
+  "suppliers": [
+    {
+      "name": "Apex Pumps",
+      "leadDays": 12,
+      "handling": 42.5,
+      "delayPerDay": 9.5
+    },
+    {
+      "name": "BearingWorks",
+      "leadDays": 7,
+      "handling": 20,
+      "delayPerDay": 6
+    },
+    {
+      "name": "FlowLine Components",
+      "leadDays": 14,
+      "handling": 31,
+      "delayPerDay": 7.8
+    },
+    {
+      "name": "HydroFlow Supply",
+      "leadDays": 18,
+      "handling": 28,
+      "delayPerDay": 7.25
+    },
+    {
+      "name": "Industrial Dynamics",
+      "leadDays": 9,
+      "handling": 26,
+      "delayPerDay": 5.75
+    },
+    {
+      "name": "MotorWorks",
+      "leadDays": 8,
+      "handling": 22,
+      "delayPerDay": 5.25
+    },
+    {
+      "name": "Precision Machining Ltd",
+      "leadDays": 11,
+      "handling": 29.5,
+      "delayPerDay": 6.9
+    },
+    {
+      "name": "PumpParts Direct",
+      "leadDays": 15,
+      "handling": 35,
+      "delayPerDay": 8.2
+    },
+    {
+      "name": "SealTech",
+      "leadDays": 10,
+      "handling": 24,
+      "delayPerDay": 6.5
+    }
+  ],
+  "components": [
+    {
+      "name": "Air Release Filter",
+      "classification": "non-factored",
+      "materialIndex": 3,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Backing Ring",
+      "classification": "non-factored",
+      "materialIndex": 5,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Balance Drum",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Bar",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Baseplate",
+      "classification": "factored",
+      "materialIndex": 6,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Bearing Bushing",
+      "classification": "non-factored",
+      "materialIndex": 2,
+      "supplierIndex": 1
+    },
+    {
+      "name": "Bearing Cover",
+      "classification": "non-factored",
+      "materialIndex": 4,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Bearing End Cover",
+      "classification": "factored",
+      "materialIndex": 4,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Bearing Housing",
+      "classification": "factored",
+      "materialIndex": 4,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Bearing Housing Lower Half",
+      "classification": "non-factored",
+      "materialIndex": 4,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Bearing Housing Upper Half",
+      "classification": "non-factored",
+      "materialIndex": 4,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Bellows",
+      "classification": "non-factored",
+      "materialIndex": 9,
+      "supplierIndex": 8
+    },
+    {
+      "name": "Blind Flange",
+      "classification": "non-factored",
+      "materialIndex": 3,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Bolt",
+      "classification": "standard-hardware",
+      "materialIndex": 0,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Bowl",
+      "classification": "non-factored",
+      "materialIndex": 4,
+      "supplierIndex": 7
+    },
+    {
+      "name": "Bracket",
+      "classification": "non-factored",
+      "materialIndex": 6,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Cable",
+      "classification": "standard-hardware",
+      "materialIndex": 1,
+      "supplierIndex": 7
+    },
+    {
+      "name": "Cable Entry",
+      "classification": "standard-hardware",
+      "materialIndex": 1,
+      "supplierIndex": 5
+    },
+    {
+      "name": "Cable Gland",
+      "classification": "standard-hardware",
+      "materialIndex": 2,
+      "supplierIndex": 2
+    },
+    {
+      "name": "Can/Barrel",
+      "classification": "non-factored",
+      "materialIndex": 3,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Cap",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Cap Nut",
+      "classification": "standard-hardware",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Carriage",
+      "classification": "non-factored",
+      "materialIndex": 6,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Case",
+      "classification": "non-factored",
+      "materialIndex": 4,
+      "supplierIndex": 7
+    },
+    {
+      "name": "Center Bushing",
+      "classification": "non-factored",
+      "materialIndex": 2,
+      "supplierIndex": 1
+    },
+    {
+      "name": "Center Sleeve",
+      "classification": "non-factored",
+      "materialIndex": 5,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Centering Ring",
+      "classification": "non-factored",
+      "materialIndex": 9,
+      "supplierIndex": 2
+    },
+    {
+      "name": "Column Pipe",
+      "classification": "non-factored",
+      "materialIndex": 3,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Cooler",
+      "classification": "factored",
+      "materialIndex": 3,
+      "supplierIndex": 7
+    },
+    {
+      "name": "Cooling Coil",
+      "classification": "non-factored",
+      "materialIndex": 3,
+      "supplierIndex": 2
+    },
+    {
+      "name": "Coupling",
+      "classification": "factored",
+      "materialIndex": 5,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Coupling Guard",
+      "classification": "factored",
+      "materialIndex": 3,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Coupling Part",
+      "classification": "factored",
+      "materialIndex": 5,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Cover Insert",
+      "classification": "standard-hardware",
+      "materialIndex": 3,
+      "supplierIndex": 7
+    },
+    {
+      "name": "Diffuser",
+      "classification": "factored",
+      "materialIndex": 3,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Diffuser Last Stage",
+      "classification": "non-factored",
+      "materialIndex": 3,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Discharge Case",
+      "classification": "non-factored",
+      "materialIndex": 4,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Discharge Cover",
+      "classification": "factored",
+      "materialIndex": 3,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Dowel Pin",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Driver Stand",
+      "classification": "non-factored",
+      "materialIndex": 6,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Flange",
+      "classification": "non-factored",
+      "materialIndex": 3,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Flexible Coupling",
+      "classification": "factored",
+      "materialIndex": 5,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Fluid Coupling",
+      "classification": "factored",
+      "materialIndex": 5,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Foot",
+      "classification": "non-factored",
+      "materialIndex": 6,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Gearbox",
+      "classification": "factored",
+      "materialIndex": 0,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Guard",
+      "classification": "non-factored",
+      "materialIndex": 3,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Hexagon Head Screw",
+      "classification": "standard-hardware",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Impeller",
+      "classification": "factored",
+      "materialIndex": 3,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Impeller Ring",
+      "classification": "non-factored",
+      "materialIndex": 9,
+      "supplierIndex": 2
+    },
+    {
+      "name": "Inner Case",
+      "classification": "non-factored",
+      "materialIndex": 4,
+      "supplierIndex": 7
+    },
+    {
+      "name": "Instrument Panel",
+      "classification": "factored",
+      "materialIndex": 3,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Interstage Bushing",
+      "classification": "non-factored",
+      "materialIndex": 2,
+      "supplierIndex": 1
+    },
+    {
+      "name": "Jack Screw",
+      "classification": "standard-hardware",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Journal Bearing",
+      "classification": "factored",
+      "materialIndex": 5,
+      "supplierIndex": 1
+    },
+    {
+      "name": "Key",
+      "classification": "standard-hardware",
+      "materialIndex": 5,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Label",
+      "classification": "standard-hardware",
+      "materialIndex": 1,
+      "supplierIndex": 2
+    },
+    {
+      "name": "Lock Piece",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Lube Oil System",
+      "classification": "factored",
+      "materialIndex": 3,
+      "supplierIndex": 7
+    },
+    {
+      "name": "Manifold",
+      "classification": "factored",
+      "materialIndex": 6,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Mechanical Seal",
+      "classification": "factored",
+      "materialIndex": 9,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Mechanical Seal Parts",
+      "classification": "factored",
+      "materialIndex": 9,
+      "supplierIndex": 8
+    },
+    {
+      "name": "Motor",
+      "classification": "factored",
+      "materialIndex": 0,
+      "supplierIndex": 5
+    },
+    {
+      "name": "Nameplate",
+      "classification": "standard-hardware",
+      "materialIndex": 9,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Nut",
+      "classification": "standard-hardware",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "O-Ring",
+      "classification": "standard-hardware",
+      "materialIndex": 8,
+      "supplierIndex": 8
+    },
+    {
+      "name": "Oil Level Gauge",
+      "classification": "factored",
+      "materialIndex": 9,
+      "supplierIndex": 2
+    },
+    {
+      "name": "Oil Level Indicator",
+      "classification": "factored",
+      "materialIndex": 9,
+      "supplierIndex": 2
+    },
+    {
+      "name": "Oil Ring",
+      "classification": "non-factored",
+      "materialIndex": 8,
+      "supplierIndex": 8
+    },
+    {
+      "name": "Oil Sight Glass",
+      "classification": "factored",
+      "materialIndex": 9,
+      "supplierIndex": 2
+    },
+    {
+      "name": "Orifice",
+      "classification": "non-factored",
+      "materialIndex": 3,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Pipe",
+      "classification": "non-factored",
+      "materialIndex": 3,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Pipe Fitting",
+      "classification": "standard-hardware",
+      "materialIndex": 3,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Piping Assembly",
+      "classification": "non-factored",
+      "materialIndex": 3,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Plate",
+      "classification": "non-factored",
+      "materialIndex": 6,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Pressure Indicator",
+      "classification": "factored",
+      "materialIndex": 9,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Pressure Gauge",
+      "classification": "factored",
+      "materialIndex": 9,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Pump Cartridge",
+      "classification": "factored",
+      "materialIndex": 3,
+      "supplierIndex": 7
+    },
+    {
+      "name": "Pump Case",
+      "classification": "factored",
+      "materialIndex": 4,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Pump Package",
+      "classification": "non-factored",
+      "materialIndex": 3,
+      "supplierIndex": 7
+    },
+    {
+      "name": "Pump Shaft",
+      "classification": "factored",
+      "materialIndex": 0,
+      "supplierIndex": 7
+    },
+    {
+      "name": "Retainer",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Ring",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Screw",
+      "classification": "standard-hardware",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Seal Ring",
+      "classification": "non-factored",
+      "materialIndex": 9,
+      "supplierIndex": 8
+    },
+    {
+      "name": "Seal System",
+      "classification": "factored",
+      "materialIndex": 9,
+      "supplierIndex": 8
+    },
+    {
+      "name": "Set Screw",
+      "classification": "standard-hardware",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Shaft",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 1
+    },
+    {
+      "name": "Shaft Nut",
+      "classification": "standard-hardware",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Sight Glass",
+      "classification": "factored",
+      "materialIndex": 9,
+      "supplierIndex": 2
+    },
+    {
+      "name": "Sleeve Coupling",
+      "classification": "factored",
+      "materialIndex": 5,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Spares and Repairs",
+      "classification": "non-factored",
+      "materialIndex": 3,
+      "supplierIndex": 7
+    },
+    {
+      "name": "Split Ring",
+      "classification": "non-factored",
+      "materialIndex": 9,
+      "supplierIndex": 8
+    },
+    {
+      "name": "Stand",
+      "classification": "non-factored",
+      "materialIndex": 6,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Stationary Ring",
+      "classification": "non-factored",
+      "materialIndex": 9,
+      "supplierIndex": 8
+    },
+    {
+      "name": "Stud",
+      "classification": "standard-hardware",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Suction & Discharge Head",
+      "classification": "non-factored",
+      "materialIndex": 4,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Suction Bell",
+      "classification": "non-factored",
+      "materialIndex": 4,
+      "supplierIndex": 7
+    },
+    {
+      "name": "Suction Case",
+      "classification": "non-factored",
+      "materialIndex": 4,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Suction Cover",
+      "classification": "factored",
+      "materialIndex": 3,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Suction Impeller",
+      "classification": "non-factored",
+      "materialIndex": 3,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Support",
+      "classification": "non-factored",
+      "materialIndex": 6,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Taper Pin",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Temperature Gauge",
+      "classification": "factored",
+      "materialIndex": 9,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Temperature Indicator",
+      "classification": "factored",
+      "materialIndex": 9,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Terminal Box",
+      "classification": "factored",
+      "materialIndex": 1,
+      "supplierIndex": 5
+    },
+    {
+      "name": "Thermo-Well",
+      "classification": "non-factored",
+      "materialIndex": 9,
+      "supplierIndex": 2
+    },
+    {
+      "name": "Threaded Plug",
+      "classification": "standard-hardware",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Throttle Bushing",
+      "classification": "non-factored",
+      "materialIndex": 2,
+      "supplierIndex": 1
+    },
+    {
+      "name": "Throttle Sleeve",
+      "classification": "non-factored",
+      "materialIndex": 5,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Thrust Collar",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 1
+    },
+    {
+      "name": "Tool",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Tube Fitting",
+      "classification": "standard-hardware",
+      "materialIndex": 3,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Valve",
+      "classification": "non-factored",
+      "materialIndex": 2,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Valve Seat",
+      "classification": "non-factored",
+      "materialIndex": 9,
+      "supplierIndex": 8
+    },
+    {
+      "name": "Variable Frequency Drive (VFD)",
+      "classification": "factored",
+      "materialIndex": 1,
+      "supplierIndex": 4
+    },
+    {
+      "name": "Vibration Monitor",
+      "classification": "factored",
+      "materialIndex": 9,
+      "supplierIndex": 2
+    },
+    {
+      "name": "Vibration Probe",
+      "classification": "factored",
+      "materialIndex": 9,
+      "supplierIndex": 1
+    },
+    {
+      "name": "Volute Case",
+      "classification": "factored",
+      "materialIndex": 4,
+      "supplierIndex": 7
+    },
+    {
+      "name": "Washer",
+      "classification": "standard-hardware",
+      "materialIndex": 0,
+      "supplierIndex": 6
+    },
+    {
+      "name": "Wear Plate",
+      "classification": "non-factored",
+      "materialIndex": 3,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Wear Ring",
+      "classification": "non-factored",
+      "materialIndex": 9,
+      "supplierIndex": 2
+    },
+    {
+      "name": "Weld Neck Flange",
+      "classification": "non-factored",
+      "materialIndex": 3,
+      "supplierIndex": 3
+    },
+    {
+      "name": "Gasket",
+      "classification": "standard-hardware",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Reducer",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Tee",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Temperature Probe Assembly",
+      "classification": "factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Elbow",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Throat Bushing",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Adapter",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Stub End",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Oil Thrower",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Junction Box Assembly",
+      "classification": "factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Profile Seal",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Hose",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Drive Adaptor for Testbed",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Lip Seal",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Nipple",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Olet",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Spacer Sleeve",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Clamp",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Spacer",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Thrower",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Flow Indicator",
+      "classification": "factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Adjusting Piece",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Axial Float Gauge",
+      "classification": "factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Nozzle Gauge",
+      "classification": "factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Deflector",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Fan",
+      "classification": "factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Interstage Sleeve",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Tension Clamp",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Constant Level Oiler",
+      "classification": "factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Oil Retaining Shield",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Gland Packing",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Spacer Disc",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Stuffing Box Housing",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Bearing Isolator",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Bearing Sleeve",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Thrust Ring",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Tension Ring",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Spacer Ring",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Tube",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Eyebolt",
+      "classification": "standard-hardware",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Gate Valve",
+      "classification": "factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Measuring Instrument",
+      "classification": "factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Plug",
+      "classification": "standard-hardware",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Thrust Bearing",
+      "classification": "factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Discharge Head",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Shaft Sleeve",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    },
+    {
+      "name": "Shim",
+      "classification": "non-factored",
+      "materialIndex": 0,
+      "supplierIndex": 0
+    }
+  ]
+}
