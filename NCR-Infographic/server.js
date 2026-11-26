@@ -242,7 +242,12 @@ function serveStaticFile(requestPath, res) {
   });
 }
 
-const masterData = loadSapData();
+const masterData = JSON.parse(
+  fs.readFileSync(
+    path.join(ROOT, 'warehouse_master_data.json'),
+    'utf8'
+  )
+);
 
 function startServer(port) {
   const server = http.createServer((req, res) => {
