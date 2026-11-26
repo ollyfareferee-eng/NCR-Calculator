@@ -157,7 +157,7 @@
         <section id="replaced-fields" class="scenario-fields">
           <div class="section-rule">
             <h3>Replacement details</h3>
-            <p class="panel-intro">Select a component, material, supplier and quantity. The calculator uses the component’s average market value where available and falls back to the relevant pump classification average for anything not priced.</p>
+            <p class="panel-intro">Select a component, material, supplier and quantity. The calculator uses the component’s average GBP purchase price where available and falls back to the relevant pump classification average for anything not priced.</p>
           </div>
           <div class="fields">
             <div class="field wide">
@@ -312,43 +312,192 @@
       const FACTORED_COMPONENT_COST = 850;
       const NON_FACTORED_COMPONENT_COST = 450;
       const STANDARD_HARDWARE_COMPONENT_COST = 40;
-      const COMPONENT_AVERAGE_MARKET_PRICES = new Map([
-        ["vibration probe", 780],
-        ["vibration monitor", 1250],
-        ["temperature indicator", 700],
-        ["terminal box", 520],
-        ["pressure indicator", 900],
-        ["oil level indicator", 650],
-        ["manifold", 1100],
-        ["lube oil system", 1600],
-        ["measuring instrument", 950],
-        ["instrument panel", 780],
-        ["cooler", 1350],
-        ["coupling", 1800],
-        ["fluid coupling", 2500],
-        ["gearbox", 4800],
-        ["motor", 6500],
-        ["variable frequency drive", 4200],
-        ["vfd", 4200],
-        ["seal system", 2100],
-        ["avm", 1800],
-        ["impeller", 1700],
-        ["pump shaft", 2400],
-        ["pump case", 2800],
-        ["diffuser", 1300],
-        ["suction cover", 1500],
-        ["discharge cover", 1400],
-        ["basin plate", 900],
-        ["baseplate", 950]
+      const COMPONENT_AVERAGE_PURCHASE_PRICES = new Map([
+        ["air release filter", 71.38],
+        ["backing ring", 151.86],
+        ["balance drum", 460.95],
+        ["bar", 179.60],
+        ["baseplate", 343.61],
+        ["bearing bushing", 406.13],
+        ["bearing", 245.94],
+        ["bearing cover", 391.77],
+        ["bearing end cover", 444.59],
+        ["bearing housing", 466.43],
+        ["bearing housing lower half", 543.60],
+        ["bearing housing upper half", 521.59],
+        ["bellows", 666.86],
+        ["blind flange", 178.66],
+        ["bolt", 32.82],
+        ["bowl", 541.28],
+        ["bracket", 325.10],
+        ["cable", 75.77],
+        ["cable entry", 206.71],
+        ["cable gland", 44.44],
+        ["cap", 37.26],
+        ["cap nut", 60.25],
+        ["carriage", 170.39],
+        ["case", 382.66],
+        ["center bushing", 598.58],
+        ["center sleeve", 587.29],
+        ["centering ring", 85.71],
+        ["column pipe", 491.91],
+        ["cooler", 245.02],
+        ["cooling coil", 310.66],
+        ["coupling", 467.32],
+        ["coupling guard", 512.60],
+        ["coupling part", 183.53],
+        ["cover insert", 525.09],
+        ["diffuser", 393.97],
+        ["diffuser last stage", 586.34],
+        ["discharge case", 52],
+        ["discharge cover", 632.39],
+        ["discharge head", 523.80],
+        ["dowel pin", 29.77],
+        ["driver stand", 123.50],
+        ["eyebolt", 167.23],
+        ["flange", 99.25],
+        ["flexible coupling", 664.17],
+        ["foot", 360.41],
+        ["gate valve", 343.65],
+        ["gearbox", 141.56],
+        ["guard", 304.77],
+        ["hexagon head screw", 17.33],
+        ["impeller", 405.32],
+        ["impeller ring", 345.02],
+        ["instrument panel", 925.54],
+        ["interstage bushing", 405.48],
+        ["inner case", 491.50],
+        ["jack screw", 54.79],
+        ["journal bearing", 416.01],
+        ["key", 55.96],
+        ["label", 279.94],
+        ["lock piece", 88.75],
+        ["lube oil system", 435.09],
+        ["manifold", 252.01],
+        ["mechanical seal", 461.91],
+        ["measuring instrument", 389.05],
+        ["motor", 265.88],
+        ["nameplate", 28.72],
+        ["nut", 69.08],
+        ["oil level gauge", 29.34],
+        ["oil level indicator", 29.34],
+        ["oil ring", 115.71],
+        ["oil sight glass", 35.91],
+        ["orifice", 113.41],
+        ["o ring", 59.68],
+        ["pipe", 166.90],
+        ["pipe fitting", 122.02],
+        ["plate", 196.51],
+        ["plug", 47.29],
+        ["pressure gauge", 164.78],
+        ["pressure indicator", 164.78],
+        ["pump case", 367.47],
+        ["pump shaft", 502.29],
+        ["retainer", 183.51],
+        ["ring", 194.88],
+        ["seal ring", 129.88],
+        ["seal system", 405.33],
+        ["screw", 23.25],
+        ["set screw", 27.27],
+        ["shaft", 319.66],
+        ["shaft nut", 216.96],
+        ["shaft sleeve", 352.73],
+        ["shim", 66.63],
+        ["sight glass", 80.65],
+        ["sleeve coupling", 502.02],
+        ["split ring", 197.13],
+        ["stand", 542.58],
+        ["stationary ring", 452.94],
+        ["stud", 44.75],
+        ["suction bell", 452.71],
+        ["suction case", 616.25],
+        ["suction cover", 503.56],
+        ["suction impeller", 439.22],
+        ["support", 432.53],
+        ["taper pin", 28.85],
+        ["temperature gauge", 359.07],
+        ["temperature indicator", 359.07],
+        ["terminal box", 407.47],
+        ["thermo well", 390.74],
+        ["throttle bushing", 547.28],
+        ["throttle sleeve", 562.89],
+        ["threaded plug", 47.25],
+        ["thrust bearing", 275.14],
+        ["thrust collar", 547.29],
+        ["tool", 302.96],
+        ["tube fitting", 117.05],
+        ["valve", 363.83],
+        ["valve seat", 63.51],
+        ["variable frequency drive", 165],
+        ["variable frequency drive vfd", 165],
+        ["vfd", 165],
+        ["vibration monitor", 385.94],
+        ["vibration probe", 326.75],
+        ["volute case", 412.19],
+        ["washer", 22.58],
+        ["wear plate", 407.50],
+        ["wear ring", 341.39],
+        ["weld neck flange", 115.71],
+        ["adjusting piece", 84.06],
+        ["adapter", 232.67],
+        ["axial float gauge", 75.91],
+        ["bearing isolator", 283.77],
+        ["bearing sleeve", 351.90],
+        ["clamp", 203.49],
+        ["constant level oiler", 131.70],
+        ["deflector", 158.25],
+        ["drive adaptor for testbed", 656],
+        ["elbow", 69.45],
+        ["fan", 276.40],
+        ["flow indicator", 418.88],
+        ["gasket", 26.28],
+        ["gland packing", 265.46],
+        ["hose", 296.02],
+        ["interstage sleeve", 506.09],
+        ["junction box assembly", 538.40],
+        ["lip seal", 39.83],
+        ["nipple", 60.96],
+        ["nozzle gauge", 102.65],
+        ["olet", 124.28],
+        ["oil retaining shield", 208.70],
+        ["oil thrower", 134.99],
+        ["piping assembly", 649.47],
+        ["profile seal", 171.27],
+        ["reducer", 94.34],
+        ["spacer", 241.24],
+        ["spacer disc", 78.31],
+        ["spacer ring", 213.95],
+        ["spacer sleeve", 273.49],
+        ["stub end", 101.51],
+        ["stuffing box housing", 588.37],
+        ["tee", 104.05],
+        ["temperature probe assembly", 447.13],
+        ["throat bushing", 238.81],
+        ["thrust ring", 111.63],
+        ["thrower", 257.27],
+        ["tension clamp", 221.23],
+        ["tension ring", 297.34],
+        ["tube", 82.39]
       ]);
       const FACTORED_COMPONENT_NAMES = new Set([
         "vibration probe",
         "vibration monitor",
         "temperature indicator",
         "temperature",
+        "temperature gauge",
+        "temperature probe assembly",
         "terminal box",
         "pressure indicator",
+        "pressure gauge",
+        "nozzle gauge",
+        "axial float gauge",
         "oil level indicator",
+        "oil level gauge",
+        "oil sight glass",
+        "sight glass",
+        "junction box assembly",
+        "flow indicator",
+        "constant level oiler",
         "manifold",
         "lube oil system",
         "measuring instrument",
@@ -444,20 +593,25 @@
           { name: "Nameplate", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
           { name: "Nut", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
           { name: "Oil Level Indicator", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Oil Level Gauge", classification: "factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Orifice", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
           { name: "O-Ring", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
+          { name: "Oil Sight Glass", classification: "factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Pipe Fitting", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
           { name: "Plug", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
           { name: "Pressure Indicator", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Pressure Gauge", classification: "factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Pump Cartridge", classification: "factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Pump Package", classification: "factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Screw", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
           { name: "Seal System", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Sight Glass", classification: "factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Set Screw", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
           { name: "Sleeve Coupling", classification: "factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Spares and Repairs", classification: "factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Stud", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
           { name: "Temperature Indicator", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Temperature Gauge", classification: "factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Terminal Box", classification: "factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Thermo-Well", classification: "factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Threaded Plug", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
@@ -498,7 +652,9 @@
           { name: "Discharge Head", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Dowel Pin", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Driver Stand", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Elbow", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Foot", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Gasket", classification: "standard-hardware", materialIndex: 0, supplierIndex: 0 },
           { name: "Impeller", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Impeller Ring", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Inner Case", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
@@ -531,9 +687,47 @@
           { name: "Throttle Bushing", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Throttle Sleeve", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Thrust Collar", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Throat Bushing", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Volute Case", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
           { name: "Wear Ring", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
-          { name: "Washer", classification: "non-factored", materialIndex: 0, supplierIndex: 0 }
+          { name: "Wear Plate", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Washer", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Reducer", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Tee", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Temperature Probe Assembly", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Adapter", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Stub End", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Oil Thrower", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Junction Box Assembly", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Profile Seal", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Hose", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Drive Adaptor for Testbed", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Lip Seal", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Nipple", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Olet", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Spacer Sleeve", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Clamp", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Spacer", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Thrower", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Flow Indicator", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Adjusting Piece", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Axial Float Gauge", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Nozzle Gauge", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Deflector", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Fan", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Interstage Sleeve", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Tension Clamp", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Constant Level Oiler", classification: "factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Oil Retaining Shield", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Gland Packing", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Spacer Disc", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Stuffing Box Housing", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Bearing Isolator", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Bearing Sleeve", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Thrust Ring", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Tension Ring", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Spacer Ring", classification: "non-factored", materialIndex: 0, supplierIndex: 0 },
+          { name: "Tube", classification: "non-factored", materialIndex: 0, supplierIndex: 0 }
         ],
         materials: [{ name: "Enter material", unitCost: 0 }],
         suppliers: [{ name: "Enter supplier", leadDays: 0, handling: 0, delayPerDay: 0 }]
@@ -590,23 +784,29 @@
         if (!normalized) {
           return { cost: NON_FACTORED_COMPONENT_COST, label: "Replacement material (non-factored avg)" };
         }
-        const directMatch = COMPONENT_AVERAGE_MARKET_PRICES.get(normalized);
+        const directMatch = COMPONENT_AVERAGE_PURCHASE_PRICES.get(normalized);
         if (typeof directMatch === "number") {
-          return { cost: directMatch, label: "Replacement material (component market avg)" };
+          return { cost: directMatch, label: "Replacement material (purchase-data avg)" };
         }
-        for (const [name, price] of COMPONENT_AVERAGE_MARKET_PRICES.entries()) {
-          if (normalized.includes(name) || name.includes(normalized)) {
-            return { cost: price, label: "Replacement material (component market avg)" };
+        const isCatalogComponent = initialAssumptions.components.some((component) =>
+          normalizeComponentName(component.name) === normalized);
+        if (!isCatalogComponent) {
+          let partialMatch = null;
+          for (const [name, price] of COMPONENT_AVERAGE_PURCHASE_PRICES.entries()) {
+            if ((normalized.includes(name) || name.includes(normalized))
+              && (!partialMatch || name.length > partialMatch[0].length)) {
+              partialMatch = [name, price];
+            }
+          }
+          if (partialMatch) {
+            return { cost: partialMatch[1], label: "Replacement material (purchase-data avg)" };
           }
         }
         const classification = deriveComponentClassification(normalized);
-        if (classification === "standard-hardware") {
-          return { cost: STANDARD_HARDWARE_COMPONENT_COST, label: "Replacement material (standard hardware avg)" };
-        }
-        if (classification === "factored") {
-          return { cost: FACTORED_COMPONENT_COST, label: "Replacement material (factored avg)" };
-        }
-        return { cost: NON_FACTORED_COMPONENT_COST, label: "Replacement material (non-factored avg)" };
+        return {
+  cost: 0,
+  label: "No component purchase price found"
+};
       }
       function fixedComponentReplacementCost(componentName) {
         return getReplacementCostBasis(componentName).cost;
@@ -657,11 +857,17 @@
             }));
         return { materials: safeMaterials, suppliers: safeSuppliers, components: safeComponents };
       }
+      function includeDefaultComponents(value) {
+        const existingNames = new Set(value.components.map((component) => normalizeComponentName(component.name)));
+        const missingDefaults = initialAssumptions.components.filter((component) =>
+          !existingNames.has(normalizeComponentName(component.name)));
+        return { ...value, components: [...value.components, ...missingDefaults] };
+      }
       function loadAssumptions() {
         try {
           const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
           if (saved && Array.isArray(saved.materials) && Array.isArray(saved.suppliers)) {
-            return normalizeAssumptions(saved);
+            return includeDefaultComponents(normalizeAssumptions(saved));
           }
         } catch (error) {
           console.warn("Saved calculator assumptions could not be loaded.", error);
@@ -672,8 +878,7 @@
         try {
           const response = await fetch(DATA_SOURCE_URL, { cache: "no-store" });
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          const remote = normalizeAssumptions(await response.json());
-          assumptions = remote;
+          assumptions = includeDefaultComponents(normalizeAssumptions(await response.json()));
           saveAssumptions();
           renderSettings();
           return true;
@@ -717,8 +922,8 @@
         const priorComponent = componentSelect.value;
         const sorted = sortComponentsByName(assumptions.components).map((component) => ({ component, index: assumptions.components.indexOf(component) }));
         componentSelect.innerHTML = optionsHtml(sorted.map(({ component }) => component), "", "Choose a component");
-        sorted.forEach(({ component, index }) => {
-          componentSelect.options[index + 1].value = String(index);
+        sorted.forEach(({ index }, optionIndex) => {
+          componentSelect.options[optionIndex + 1].value = String(index);
         });
         if (sorted.some(({ index }) => String(index) === priorComponent)) componentSelect.value = priorComponent;
         setSelectOptions($("material"), assumptions.materials, "Choose a material");
@@ -843,7 +1048,7 @@
         if ($("ncr-start").value && !$("ncr-end").value) warnings.push(`NCR is treated as open through today (${weekdays} weekdays counted).`);
         $("validation").textContent = warnings.join(" ");
         $("validation").classList.toggle("visible", warnings.length > 0);
-        $("result-foot").textContent = `Inspection/admin and daily meeting costs are averaged across ${ncrCount} NCRs per week. Replaced components use the selected component market average when available (${replacementBasis.cost} × quantity); otherwise they fall back to the relevant pump classification average, plus one supplier handling charge, supplier delay cost × lead days, entered Procurement and Scheduling & planning time, and a fixed 49-minute stores allowance at £${HOURLY_RATE}/hour.`;
+        $("result-foot").textContent = `Inspection/admin and daily meeting costs are averaged across ${ncrCount} NCRs per week. Replaced components use the selected component purchase-data average when available (${replacementBasis.cost} × quantity); otherwise they fall back to the relevant pump classification average, plus one supplier handling charge, supplier delay cost × lead days, entered Procurement and Scheduling & planning time, and a fixed 49-minute stores allowance at £${HOURLY_RATE}/hour.`;
       }
       function updateReplacementFields() {
         const isReplaced = isComponentReplaced();
