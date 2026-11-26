@@ -217,7 +217,7 @@ function sendJson(res, data) {
 }
 
 function serveStaticFile(requestPath, res) {
-  const requestedPath = requestPath === '/' ? '/calculator.html' : requestPath;
+  const requestedPath = requestPath === '/' ? '/index.html' : requestPath;
   const safePath = decodeURIComponent(path.normalize(requestedPath).replace(/^\.+/, ''));
   const filePath = path.resolve(ROOT, safePath.replace(/^\/+/, ''));
   const rootPath = path.resolve(ROOT);
