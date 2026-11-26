@@ -878,7 +878,21 @@
         try {
           const response = await fetch(DATA_SOURCE_URL, { cache: "no-store" });
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          assumptions = includeDefaultComponents(normalizeAssumptions(await response.json()));
+          const data = await response.json();
+
+data.components = data.components.map(component => ({
+    ...component,
+    materialIndex: data.materials.findIndex(
+        material => material.name === component.material
+    ),
+    supplierIndex: data.suppliers.findIndex(
+        supplier => supplier.name === component.supplier
+    )
+}));
+
+assumptions = includeDefaultComponents(
+    normalizeAssumptions(data)
+);
           saveAssumptions();
           renderSettings();
           return true;
